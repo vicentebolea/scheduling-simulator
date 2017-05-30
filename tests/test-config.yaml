@@ -1,0 +1,30 @@
+---
+- test: &test-sjf
+  algorithm: sjf
+  parameters: None
+  input: |
+    1 2 3
+    2 3 1
+    2 5 1
+
+  output: |
+    0: schedule P1
+    5: terminate P1
+    6: schedule P2
+    9: terminate P2
+
+- test: &test-rr
+  algorithm: sjf
+  parameters: -e=sjf q=10 
+  input: |
+    1 2 3
+    2 3 1
+    2 5 1
+
+  output: |
+    0: schedule P1
+    5: terminate P1
+    6: schedule P2
+    9: terminate P2
+
+...
