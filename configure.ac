@@ -14,10 +14,13 @@ AC_PROG_CXX
 AC_LANG([C++])
 
 AC_TYPE_SIZE_T
+AC_TYPE_UINT8_T
 AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
-AC_TYPE_UINT8_T
 AC_HEADER_STDC
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h sys/socket.h sys/time.h unistd.h])
+#AM_PATH_PYTHON([2.7])
+
+# Compiled defined constants
+AC_DEFINE([SCHEDULER_SIMULATOR_INPUT_LINE_LENGTH], [256], [line length of input file])
 
 AC_OUTPUT

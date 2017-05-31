@@ -5,8 +5,8 @@ namespace scheduler_simulator {
 
 class Options {
   public:
-    Options ();
-    virtual ~Options () = 0;
+    Options () = default;
+    virtual ~Options () = default;
 
     virtual std::string get_str(std::string) = 0;
 };

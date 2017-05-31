@@ -4,10 +4,8 @@ using namespace scheduler_simulator;
 
 CLIOptions::CLIOptions(int argc, char** argv) {
 
-  for (int i = 1; i <= argc; i++) {
+  for (int i = 1; i < argc; i += 2)
     options.insert({argv[i], argv[i+1]});
-    i++;
-  }
 }
 
 std::string CLIOptions::get_str(std::string key) {

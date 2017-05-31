@@ -1,11 +1,10 @@
 ---
 - test: &test-sjf
   algorithm: sjf
-  parameters: None
+  parameters: -s SJF
   input: |
-    1 2 3
-    2 3 1
-    2 5 1
+    1 0 5
+    2 6 3
 
   output: |
     0: schedule P1
@@ -14,12 +13,11 @@
     9: terminate P2
 
 - test: &test-rr
-  algorithm: sjf
-  parameters: -e=sjf q=10 
+  algorithm: rr 
+  parameters: -s RR -q 10 
   input: |
-    1 2 3
-    2 3 1
-    2 5 1
+    1 0 5
+    2 6 3
 
   output: |
     0: schedule P1

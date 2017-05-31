@@ -3,10 +3,11 @@
 
 namespace scheduler_simulator {
 
-class scheduler;
+class Scheduler;
+class Options;
 
 //
 //
-scheduler* scheduler_factory(std::string);
+Scheduler* scheduler_factory(Options*);
 
 }

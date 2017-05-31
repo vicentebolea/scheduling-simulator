@@ -1,21 +1,23 @@
 #include "text_reader.hh"
+#include "options.hh"
 #include <sstream>
+#include <string.h>
 
 using namespace scheduler_simulator;
 using namespace std;
 
 TextReader::TextReader(Options* ops) {
-  string file_name = ops->get_str("input_path");
+  string file_name = ops->get_str("-i");
   ifs.open(file_name);
 }
 
 bool TextReader::is_next() {
-  return ifs.good();
+  return !(ifs.peek() == EOF);
 }
 
 std::vector<std::string> TextReader::next() {
-  char line [256];
-  ifs.readline(line, 256);
+  char line [SCHEDULER_SIMULATOR_INPUT_LINE_LENGTH];
+  ifs.getline(line, 256);
   
   stringstream ss(line);
 

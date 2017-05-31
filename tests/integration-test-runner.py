@@ -2,30 +2,51 @@
 
 import yaml
 import subprocess 
+import os
+import sys
 
-TEST_CONFIG_PATH = $TEST_CONFIG$
-TEST_BINARY      = $TEST_BINARY$
+# use AM_TESTS_ENVIRONMENT
+TEST_CONFIG_PATH = os.environ['TEST_CONFIG']
+TEST_BINARY      = os.environ['TEST_BINARY']
 
-def launch_test(name, settings)
+def die(str_):
+	print(str_)
+	sys.exit(-1)
+
+def launch_test(settings):
+	name = settings['algorithm']
 	ops = settings['parameters']
 	input_ = settings['input']
 	output_ = settings['output']
 
-	cmd = TEST_BINARY + " -i- " + ops
+	cmd = TEST_BINARY + " -i - " + ops
 
-	p = subprocess.popen(cmd, shell=True, stdin=subproccess.PIPE);
+	p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE);
 	p.stdin.write(input_)
+	p.stdin.close()
 	given_output = p.stdout.read()
+
+	test = (output_ == given_output)
+	if not test:
+		print("Code output: ")
+		print(given_output)
+		print("Reference output: ")
+		print(output_)
 	
-	return (output_ == given_output)
+	return test
+
+def main():
+	with open(TEST_CONFIG_PATH, 'r') as stream:
+		try:
+			settings = yaml.load(stream)
+			for test in settings:
+				name = test['algorithm']
+				if launch_test(test) != True:
+					die("ERROR in integration test ALGORITHM: " + name)
+
+		except yaml.YAMLError as exc:
+			print(exc)
 
 
-with open(TEST_CONFIG_PATH, 'r') as stream:
-	try:
-		settings = yaml.load(stream)
-		for test, test_details in settings:
-			if launch_test(test, test_details) != True
-				print("ERROR in integration test ALGORITHM: " + test)
-
-	except yaml.YAMLError as exc:
-		print(exc):
+if __name__ == "__main__":
+	main()

@@ -9,10 +9,11 @@ namespace scheduler_simulator {
 class CLIOptions: public Options {
   public:
     CLIOptions(int argc, char** argv);
-    ~CLIOptions();
+    ~CLIOptions() = default; 
 
     virtual std::string get_str(std::string) override;
 
   private:
     std::map<std::string, std::string> options;
 };
+}
