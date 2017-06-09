@@ -14,7 +14,8 @@ scheduler_sim_SOURCES = main.cc              \
                         schedulers/rm.cc     \
                         schedulers/lt.cc     \
                         schedulers/edf.cc    \
-                        schedulers/scheduler_factory.cc
+                        schedulers/scheduler_factory.cc \
+                        schedulers/interactive_scheduler.cc
 
 check_SCRIPTS = tests/integration-test-runner.py scheduler_sim
 

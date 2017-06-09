@@ -12,16 +12,17 @@ SchedulerRR::SchedulerRR (Options* opt) {
 }
 
 bool SchedulerRR::is_next() {
-  return !fifo_queue.empty() || scheduled_proc.second >= 0;
+  return !fifo_queue.empty() || scheduled_proc.second >= 0 || !input_lines.empty();
 }
 
-bool SchedulerRR::schedule(std::vector<std::string> in) {
-  if (!is_next() && in.size() == 0) return true;
+bool SchedulerRR::schedule() {
+  if (is_next_line()) {
+    auto in = input_lines.front();
 
-  if (in.size() != 0) {
     int proc_id = atoi(in[0].c_str());
     int burst_time = atoi(in[2].c_str());
     fifo_queue.push({proc_id, burst_time});
+    input_lines.pop();
   }
 
   // Reschedule
@@ -52,7 +53,7 @@ bool SchedulerRR::schedule(std::vector<std::string> in) {
 
   scheduled_proc.second--;
   current_quantum++;
-  this->time++;
+  time++;
 
   return true;
 }

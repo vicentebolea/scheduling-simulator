@@ -1,13 +1,11 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <queue>
 
 namespace scheduler_simulator {
 
 class Scheduler {
-  protected:
-    virtual ~Scheduler () = default; 
-
   public:
     Scheduler () = default;
 
@@ -18,11 +16,21 @@ class Scheduler {
     //
     // @arg in is a vector of string which represents a new process,
     //      If no vector is passed it will reschedule its previous process.
-    virtual bool schedule(std::vector<std::string> in = std::vector<std::string>()) = 0;
+    virtual bool schedule() = 0;
 
     // Returns whether the scheduler is done.
     // @returns false if all its processes has terminated
     virtual bool is_next() = 0;
+
+    void parse_line(std::vector<std::string> in) {
+      input_lines.push(in);
+    }
+
+  protected:
+    virtual ~Scheduler () = default; 
+    uint32_t time = 0;
+    
+    std::queue<std::vector<std::string>> input_lines;
 };
 
 }

@@ -15,21 +15,24 @@ using std::endl;
 bool SchedulerSJF::is_next() {
   return any_of(remaining_times.begin(), remaining_times.end(), [](auto& a) { 
            return a.second > 0; 
-         });
+         }) || !input_lines.empty();
 }
+
 
 /**
  *
  *
  *
  */
-bool SchedulerSJF::schedule(std::vector<std::string> in) {
-  if (remaining_times.size() + in.size() == 0) return true;
+bool SchedulerSJF::schedule() {
+  if (remaining_times.size() + input_lines.size() == 0) return true;
 
-  if (in.size() != 0) {
+  if (is_next_line()) {
+    auto in = input_lines.front();
     int proc_id = atoi(in[0].c_str());
     int burst_time = atoi(in[2].c_str());
     remaining_times.insert({proc_id, burst_time});
+    input_lines.pop();
   }
 
   auto shortest = min_element(remaining_times.begin(), remaining_times.end(), [](auto& a, auto& b) {

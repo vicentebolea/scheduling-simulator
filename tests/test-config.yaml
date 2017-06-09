@@ -25,4 +25,20 @@
     6: schedule P2
     9: terminate P2
 
+- test: &test-rm
+  algorithm: rm 
+  parameters: -s RM -e 90
+  input: |
+    1 50 20
+    2 100 35
+
+  output: |
+    0: schedule P1
+    20: terminate P1
+    20: schedule P2
+    50: schedule P1
+    70: terminate P1
+    70: schedule P2
+    75: terminate P2
+
 ...
