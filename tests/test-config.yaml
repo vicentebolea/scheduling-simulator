@@ -14,7 +14,7 @@
 
 - test: &test-rr
   algorithm: rr 
-  parameters: -s RR -q 10 
+  parameters: -s RR -q 3
   input: |
     1 0 5
     2 6 3

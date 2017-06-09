@@ -3,14 +3,26 @@
 #include <algorithm>
 
 using namespace scheduler_simulator;
-using namespace std;
+using std::any_of;
+using std::min_element;
+using std::cout;
+using std::endl;
 
+//
+// Returns whether the scheduler is done.
+// @returns false if all its processes has terminated
+//
 bool SchedulerSJF::is_next() {
   return any_of(remaining_times.begin(), remaining_times.end(), [](auto& a) { 
-        return a.second > 0; 
-      });
+           return a.second > 0; 
+         });
 }
 
+/**
+ *
+ *
+ *
+ */
 bool SchedulerSJF::schedule(std::vector<std::string> in) {
   if (remaining_times.size() + in.size() == 0) return true;
 
@@ -21,8 +33,8 @@ bool SchedulerSJF::schedule(std::vector<std::string> in) {
   }
 
   auto shortest = min_element(remaining_times.begin(), remaining_times.end(), [](auto& a, auto& b) {
-        return a.second < b.second; 
-      });
+                    return a.second < b.second; 
+                  });
 
   if (scheduled_proc == shortest->first) {
     shortest->second--;

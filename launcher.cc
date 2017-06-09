@@ -36,7 +36,5 @@ void Launcher::run() {
       }
       break;
     }
-
-    //time++;
   }
 }
