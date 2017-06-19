@@ -3,6 +3,7 @@
 #include <map>
 #include <list>
 #include <utility>
+#include <memory>
 
 namespace scheduler_simulator {
 
@@ -17,19 +18,23 @@ class SchedulerRM : public Scheduler {
     virtual bool is_next() override;
 
   private:
+    class Proc;
     bool can_it_be_scheduled();
+    void initialize();
+    void schedule_proc();
 
     struct Proc {
       int id = 0;
       int period = 0;
       int cpu_time = 0;
       int last_scheduled_time = 0;
+      int consumed_cpu = 0;
     };
 
-    std::list<Proc> proc_list;
-    Proc* scheduled_proc;
+    std::list<std::shared_ptr<Proc>> ready_list;
+    std::list<std::shared_ptr<Proc>> proc_list;
+    std::shared_ptr<Proc> scheduled_proc;
 
-    int current_proc_time = 0;
     uint32_t end_time = 0;
     bool deadly_end = false;
 };
