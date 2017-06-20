@@ -16,12 +16,35 @@ bool SchedulerLT::is_next() {
 }
 
 std::shared_ptr<SchedulerLT::Proc> SchedulerLT::schedule_proc() {
-  auto it = max_element(ready_list.begin(), ready_list.end(), [] (auto& a, auto& b) {
-      return (a->number_tickets < b->number_tickets);
-  });
-  auto proc = *it;
-  ready_list.erase(it);
+  std::shared_ptr<Proc> proc;
+  decltype(ready_list.begin()) it;
+  while (true) {
+    it = max_element(ready_list.begin(), ready_list.end(), [] (auto& a, auto& b) {
+        return (a->number_tickets < b->number_tickets);
+        });
 
+    proc = *it;
+    if (proc->resource != -1) {
+      auto r_it = resources_used.find(proc->resource);
+
+      // Trying to access locked resource
+      if (r_it != resources_used.end() and r_it->second->id != proc->id) {
+        r_it->second->number_tickets += proc->number_tickets;
+        r_it->second->borrowed_tickets = proc->number_tickets;
+        r_it->second->borrowed_proc = proc;
+        proc->number_tickets = 0;
+
+        locked_list.push_back(proc);
+        ready_list.erase(it);
+      } else {
+        break;
+      }
+    } else {
+      break;
+    }
+  }
+
+  ready_list.erase(it);
   return proc;
 }
 
@@ -38,6 +61,14 @@ bool SchedulerLT::schedule() {
     proc->id  = stoi(in[0]);
     proc->cpu_time = stoi(in[2]);
     proc->number_tickets  = stoi(in[3]);
+
+    // Add ticket compensation
+    auto it = boost_list.find(proc->id);
+    if (it != boost_list.end()) {
+      proc->number_tickets *= it->second;
+      boost_list.erase(it);
+    }
+
     if (in.size() == 5) {
       proc->resource = stoi(in[4]);
     }
@@ -51,6 +82,25 @@ bool SchedulerLT::schedule() {
 
       if (scheduled_proc->cpu_time == 0) {
         cout << time << ": terminate P" << scheduled_proc->id << endl;
+
+        // Free the resources
+        if (scheduled_proc->resource != -1) {
+          resources_used.erase(scheduled_proc->resource);
+          if (scheduled_proc->borrowed_proc) {
+            scheduled_proc->borrowed_proc->number_tickets = scheduled_proc->borrowed_tickets;
+
+            //Clean-up
+            remove(locked_list.begin(), locked_list.end(), scheduled_proc->borrowed_proc);
+            ready_list.push_back(scheduled_proc->borrowed_proc);
+          }
+        }
+
+        // ticket compensation
+        if (current_quantum < quantum) {
+          int speedup = quantum / current_quantum;
+          boost_list.insert({scheduled_proc->id, speedup});
+        }
+
         scheduled_proc.reset();
         change_process = true;
 
@@ -65,8 +115,13 @@ bool SchedulerLT::schedule() {
   if (change_process and !ready_list.empty()) {
     auto next_proc = schedule_proc();
 
+    // Lock the resources
+    if (next_proc->resource != -1)
+      resources_used.insert({next_proc->resource, next_proc});
+
     // Re-schedule new process
     scheduled_proc = next_proc;
+    
     cout << time << ": schedule P" << scheduled_proc->id << endl;
     current_quantum = 0;
   }
