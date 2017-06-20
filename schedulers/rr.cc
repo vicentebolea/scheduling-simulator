@@ -7,7 +7,7 @@ using namespace scheduler_simulator;
 using namespace std;
 
 SchedulerRR::SchedulerRR (Options* opt) {
-  quantum = atoi(opt->get_str("-q").c_str());
+  quantum = stoi(opt->get_str("-q"));
   current_quantum = quantum;
 }
 
@@ -16,43 +16,60 @@ bool SchedulerRR::is_next() {
 }
 
 bool SchedulerRR::schedule() {
-  if (is_next_line()) {
-    auto in = input_lines.front();
-
-    int proc_id = atoi(in[0].c_str());
-    int burst_time = atoi(in[2].c_str());
-    fifo_queue.push({proc_id, burst_time});
-    input_lines.pop();
+  if (time == 0) {
+    input_lines.sort([] (auto& a, auto& b) { return stoi(a[1]) < stoi(b[1]); });
   }
 
-  // Reschedule
-  if (current_quantum == quantum) {
-    current_quantum = 0;
+  bool was_empty = false;
+  if (scheduled_proc.second == 0 or current_quantum == quantum) {
+    if (scheduled_proc.second == 0) {
+      cout << time << ": terminate P" << scheduled_proc.first << endl;
+
+    } else if (current_quantum == quantum and scheduled_proc.second > 0) {
+      fifo_queue.push(scheduled_proc);
+    }
+
+    was_empty = fifo_queue.empty();
+    if (fifo_queue.empty()) {
+      while (is_next_line()) {
+        auto in = input_lines.front();
+        input_lines.pop_front();
+
+        int proc_id = stoi(in[0]);
+        int burst_time = stoi(in[2]);
+        fifo_queue.push({proc_id, burst_time});
+      }
+    }
 
     if (!fifo_queue.empty()) {
       auto next_proc = fifo_queue.front();
+      fifo_queue.pop();
 
       // Re-schedule new process
       if (scheduled_proc.first != next_proc.first) {
-
-        // Readd previously scheduled proccess
-        if (scheduled_proc.second > 0) {
-          fifo_queue.push(scheduled_proc);
-        }
-
         scheduled_proc = next_proc;
         cout << time << ": schedule P" << scheduled_proc.first << endl;
-        fifo_queue.pop();
-      }
+      } 
+    }
+    current_quantum = 0;
+  }
+
+  if (!was_empty) {
+    while (is_next_line()) {
+      auto in = input_lines.front();
+      input_lines.pop_front();
+
+      int proc_id = stoi(in[0]);
+      int burst_time = stoi(in[2]);
+      fifo_queue.push({proc_id, burst_time});
     }
   }
 
-  if (scheduled_proc.second == 0) {
-    cout << time << ": terminate P" << scheduled_proc.first << endl;
-  }
-
   scheduled_proc.second--;
-  current_quantum++;
+  if (scheduled_proc.second < 0)
+    current_quantum = quantum;
+  else
+    current_quantum++;
   time++;
 
   return true;

@@ -3,6 +3,7 @@
 #include "sjf.hh"
 #include "rr.hh"
 #include "rm.hh"
+#include "edf.hh"
 
 using namespace scheduler_simulator;
   
@@ -20,8 +21,8 @@ Scheduler* scheduler_simulator::scheduler_factory(Options* ops) {
   SCHEDULER_TYPE(SJF);
   SCHEDULER_TYPE(RR, ops);
   SCHEDULER_TYPE(RM, ops);
-  /*
-  SCHEDULER_TYPE(EDF);
+  SCHEDULER_TYPE(EDF, ops);
+/*
   SCHEDULER_TYPE(LT);
 */
   return nullptr;

@@ -18,7 +18,7 @@ class SchedulerRR : public InteractiveScheduler {
 
   private:
     std::queue<std::pair<int, int>> fifo_queue;
-    std::pair<int, int> scheduled_proc = {0,0};
+    std::pair<int, int> scheduled_proc = {0,-1};
     uint32_t quantum = 0;
     uint32_t current_quantum = 0;
 };

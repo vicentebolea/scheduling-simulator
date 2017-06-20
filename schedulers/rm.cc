@@ -15,26 +15,15 @@ bool SchedulerRM::is_next() {
   return !deadly_end && time <= end_time;
 }
 
-bool SchedulerRM::can_it_be_scheduled() {
-  double total_cpu_utilization = .0;
-
-  for (auto& proc : proc_list) {
-    double cpu_utilization = (double) proc->cpu_time / (double) proc->period;
-    total_cpu_utilization += cpu_utilization;
-  }
-
-  return total_cpu_utilization < 1.0L;
-}
-
 void SchedulerRM::initialize() {
     while (!input_lines.empty()) {
       auto line = input_lines.front();
+      input_lines.pop_front();
       auto proc = make_shared<Proc>();
       proc->id         = stoi(line[0]);
       proc->period     = stoi(line[1]);
       proc->cpu_time   = stoi(line[2]);
       proc_list.emplace_back(proc);
-      input_lines.pop();
     }
 
     std::copy(proc_list.begin(), proc_list.end(), back_inserter(ready_list));
@@ -44,7 +33,7 @@ void SchedulerRM::schedule_proc() {
   if (ready_list.empty())
     return;
 
-  auto scheduled_proc_it = min_element(ready_list.begin(), ready_list.end(), [](auto& a, auto&b ) {
+  auto scheduled_proc_it = min_element(ready_list.begin(), ready_list.end(), [](auto& a, auto&b) {
       return a->period < b->period;
       });
 
@@ -60,17 +49,22 @@ bool SchedulerRM::schedule() {
   // At the first call
   if (time == 0) {
     initialize();
-
-    if (!can_it_be_scheduled()) {
-      cout << "Violate deadline of P4" << endl;
-      deadly_end = true;
-      return false;
-    }
-
     schedule_proc();
 
   // General case 
   } else {
+
+    // Check for violations
+    auto proc = std::find_if(ready_list.begin(), ready_list.end(), [this] (auto& proc){
+        return time % proc->period == 0 and time != 0 and proc->consumed_cpu < proc->cpu_time;
+        }) ;
+
+    if (proc != ready_list.end()) {
+      cout << "Violate deadline of P" << (*proc)->id << endl;
+      deadly_end = true;
+      return false;
+    }
+
     // Reenter processes in ready list
     std::copy_if(proc_list.begin(), proc_list.end(), back_inserter(ready_list) , [this] (auto& p) {
         return time % p->period == 0 and time != 0;
@@ -78,7 +72,6 @@ bool SchedulerRM::schedule() {
 
 
     if (scheduled_proc) {
-    //cout << "Looping time "<< time << endl;
       scheduled_proc->consumed_cpu++;
 
       // Is it proc finished, terminate

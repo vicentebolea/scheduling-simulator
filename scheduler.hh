@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
-#include <queue>
+#include <list>
 
 namespace scheduler_simulator {
 
@@ -23,14 +23,14 @@ class Scheduler {
     virtual bool is_next() = 0;
 
     void parse_line(std::vector<std::string> in) {
-      input_lines.push(in);
+      input_lines.push_back(in);
     }
 
   protected:
     virtual ~Scheduler () = default; 
     uint32_t time = 0;
     
-    std::queue<std::vector<std::string>> input_lines;
+    std::list<std::vector<std::string>> input_lines;
 };
 
 }

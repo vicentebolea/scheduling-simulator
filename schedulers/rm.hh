@@ -18,8 +18,6 @@ class SchedulerRM : public Scheduler {
     virtual bool is_next() override;
 
   private:
-    class Proc;
-    bool can_it_be_scheduled();
     void initialize();
     void schedule_proc();
 
