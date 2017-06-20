@@ -4,6 +4,7 @@
 #include "rr.hh"
 #include "rm.hh"
 #include "edf.hh"
+#include "lt.hh"
 
 using namespace scheduler_simulator;
   
@@ -22,8 +23,6 @@ Scheduler* scheduler_simulator::scheduler_factory(Options* ops) {
   SCHEDULER_TYPE(RR, ops);
   SCHEDULER_TYPE(RM, ops);
   SCHEDULER_TYPE(EDF, ops);
-/*
-  SCHEDULER_TYPE(LT);
-*/
+  SCHEDULER_TYPE(LT, ops);
   return nullptr;
 }

@@ -235,4 +235,35 @@
     60: schedule P1
     85: terminate P1
     85: schedule P2
+
+- test: &test-lt
+  algorithm: lt 
+  parameters: -s LT -q 30
+  input: |
+    1 0 60 10 1
+    2 0 10 20
+    3 20 40 100 1
+    4 80 20 10 1
+    2 105 20 20
+    5 105 40 40
+    6 120 10 30
+
+  output: |
+    0: schedule P2
+    10: terminate P2
+    10: schedule P1
+    40: schedule P1
+    70: terminate P1
+    70: schedule P3
+    100: schedule P3
+    110: terminate P3
+    110: schedule P2
+    130: terminate P2
+    130: schedule P5
+    160: schedule P5
+    170: terminate P5
+    170: schedule P6
+    180: terminate P6
+    180: schedule P4
+    200: terminate P4
 ...
