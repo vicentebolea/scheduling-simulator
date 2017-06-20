@@ -7,6 +7,20 @@
 using namespace scheduler_simulator;
 using namespace std;
 
+namespace {
+
+int next_deadline(int time, int period) {
+  if (time < period)
+    return period;
+
+  if (period % time == 0)
+    return time + period;
+
+  return (time/period) * period + period;
+}
+
+}
+
 SchedulerEDF::SchedulerEDF (Options* opt) {
   end_time = atoi(opt->get_str("-e").c_str());
 }
@@ -34,8 +48,9 @@ void SchedulerEDF::schedule_proc() {
     return;
 
   auto scheduled_proc_it = min_element(ready_list.begin(), ready_list.end(), [this](auto& a, auto&b) {
-      int a_next_deadline = time + (time % a->period);
-      int b_next_deadline = time + (time % a->period);
+      int a_next_deadline = next_deadline(time, a->period);
+      int b_next_deadline = next_deadline(time, b->period);
+      //cout << "t:" << time << " p" << a->id <<" a " << a_next_deadline << " b " << b_next_deadline << endl;
       return (a_next_deadline < b_next_deadline);
       });
 
@@ -83,14 +98,15 @@ bool SchedulerEDF::schedule() {
         schedule_proc();
 
       } else if (!ready_list.empty()) {
-        auto scheduled_proc_it = min_element(ready_list.begin(), ready_list.end(), [this](auto& a, auto&b ) {
-              int a_next_deadline = time + (time % a->period);
-              int b_next_deadline = time + (time % a->period);
+        auto scheduled_proc_it = min_element(ready_list.begin(), ready_list.end(), 
+            [this](auto& a, auto&b ) {
+              int a_next_deadline = next_deadline(time, a->period);
+              int b_next_deadline = next_deadline(time, b->period);
               return (a_next_deadline < b_next_deadline);
             });
 
-        if ((*scheduled_proc_it)->id != scheduled_proc->id 
-            and (*scheduled_proc_it)->period < scheduled_proc->period) {
+        if ((*scheduled_proc_it)->id != scheduled_proc->id and 
+            next_deadline(time, (*scheduled_proc_it)->period) < next_deadline(time,scheduled_proc->period)) {
           ready_list.push_back(scheduled_proc);
           schedule_proc();
         }
