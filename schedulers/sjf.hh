@@ -15,7 +15,7 @@ class SchedulerSJF : public InteractiveScheduler {
   private:
 
     std::map<int, int> remaining_times;
-    int scheduled_proc;
+    int scheduled_proc = -1;
 };
 
 }

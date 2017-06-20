@@ -22,8 +22,8 @@ bool StdinReader::is_next() {
 }
 
 std::vector<std::string> StdinReader::next() {
-  char line [256];
-  fgets(line, 256, stdin);
+  char line [SCHEDULER_SIMULATOR_INPUT_LINE_LENGTH];
+  fgets(line, SCHEDULER_SIMULATOR_INPUT_LINE_LENGTH, stdin);
   stringstream ss(line);
 
   vector<string> output;

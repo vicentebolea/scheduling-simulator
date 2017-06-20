@@ -19,6 +19,7 @@ int next_deadline(int time, int period) {
   return (time/period) * period + period;
 }
 
+
 }
 
 SchedulerEDF::SchedulerEDF (Options* opt) {
@@ -50,7 +51,6 @@ void SchedulerEDF::schedule_proc() {
   auto scheduled_proc_it = min_element(ready_list.begin(), ready_list.end(), [this](auto& a, auto&b) {
       int a_next_deadline = next_deadline(time, a->period);
       int b_next_deadline = next_deadline(time, b->period);
-      //cout << "t:" << time << " p" << a->id <<" a " << a_next_deadline << " b " << b_next_deadline << endl;
       return (a_next_deadline < b_next_deadline);
       });
 
