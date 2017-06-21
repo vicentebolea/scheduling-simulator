@@ -53,6 +53,5 @@ simulator_sim -s SCHEDULER [OPS] -i FILE
 
 ## CONTRIBUTION
 - [License](LICENSE)
-
-## AUTHORS
-Vicente Adolfo Bolea Sanchez <vicente.bolea@gmail.com>
+- [Authors](AUTHORS.md)
+- [Contribute](CONTRIBUTING.md)
