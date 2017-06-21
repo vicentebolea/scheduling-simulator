@@ -28,3 +28,23 @@ AM_TESTS_ENVIRONMENT = \
 
 tests/integration-test-runner.py:
 	chmod +x ./tests/integration-test-runner.py
+
+
+EXTRA_DIST = tests/integration-test-runner.py   \
+             tests/test-config.yaml             \
+						 schedulers/rr.hh     \
+						 schedulers/sjf.hh    \
+						 schedulers/rm.hh     \
+						 schedulers/lt.hh     \
+						 schedulers/edf.hh    \
+						 schedulers/scheduler_factory.hh \
+						 schedulers/interactive_scheduler.hh \
+						 launcher.hh          \
+						 cli_options.hh       \
+						 options.hh           \
+						 reader.hh            \
+						 text_reader.hh       \
+						 stdin_reader.hh      \
+						 reader_factory.hh    \
+						 scheduler.hh
+

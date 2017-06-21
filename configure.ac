@@ -1,6 +1,6 @@
 # vim: foldmethod=marker
-AC_INIT([SchedulerSimulator], 
-    [0.0.1],
+AC_INIT([Scheduling-Simulator], 
+    [0.0.2],
     [vicente.bolea@gmail.com], 
     [], [vicentebolea.me])
 AC_CONFIG_AUX_DIR([./.autotools_aux])
