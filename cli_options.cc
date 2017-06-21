@@ -2,6 +2,7 @@
 
 using namespace scheduler_simulator;
 
+// K.I.S.S implementation
 CLIOptions::CLIOptions(int argc, char** argv) {
 
   for (int i = 1; i < argc; i += 2)

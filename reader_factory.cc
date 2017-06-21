@@ -5,6 +5,7 @@
 
 using namespace scheduler_simulator;
 
+//! Returns the specific reader depending on the ops flags
 std::shared_ptr<Reader> scheduler_simulator::reader_factory(Options* ops) {
   if(ops->get_str("-i") == "-")
     return std::make_shared<StdinReader>();

@@ -9,6 +9,8 @@ using namespace std;
 
 namespace {
 
+//! Helper function to find out the next deadline given
+//! the current time and period.
 int next_deadline(int time, int period) {
   if (time < period)
     return period;
@@ -26,10 +28,13 @@ SchedulerEDF::SchedulerEDF (Options* opt) {
   end_time = atoi(opt->get_str("-e").c_str());
 }
 
+//! @return if violation or end_time reached
 bool SchedulerEDF::is_next() {
   return !deadly_end && time <= end_time;
 }
 
+//! Read all the proccess from the input
+//! and insert them in the proc_list
 void SchedulerEDF::initialize() {
     while (!input_lines.empty()) {
       auto line = input_lines.front();
@@ -44,6 +49,8 @@ void SchedulerEDF::initialize() {
     std::copy(proc_list.begin(), proc_list.end(), back_inserter(ready_list));
 }
 
+//! Try to schedule the process with the highest priority.
+//! This is with the earliest deadline
 void SchedulerEDF::schedule_proc() {
   if (ready_list.empty())
     return;
@@ -61,6 +68,14 @@ void SchedulerEDF::schedule_proc() {
   cout << time << ": schedule P" << scheduled_proc->id << endl;
 }
 
+//! 1. At time 0, read the input and schedule the first process.
+//! 2. At time > 0
+//!    1. Check for deadline violations
+//!    2. Re-enter periodic proccess to the ready_list if it is their time.
+//!    3. If process terminate, schedule new process.
+//!    4. If any other process has more priority than the current one, 
+//!       schedule new process.
+//! @see SchedulerRM::schedule      
 bool SchedulerEDF::schedule() {
 
   // At the first call
@@ -88,6 +103,7 @@ bool SchedulerEDF::schedule() {
       });
 
 
+    // If a process is already scheduled
     if (scheduled_proc) {
       scheduled_proc->consumed_cpu++;
 
@@ -97,6 +113,7 @@ bool SchedulerEDF::schedule() {
         scheduled_proc->consumed_cpu = 0;
         schedule_proc();
 
+      // Schedule new process if there are remaining processes
       } else if (!ready_list.empty()) {
         auto scheduled_proc_it = min_element(ready_list.begin(), ready_list.end(), 
             [this](auto& a, auto&b ) {
@@ -105,6 +122,7 @@ bool SchedulerEDF::schedule() {
               return (a_next_deadline < b_next_deadline);
             });
 
+        // If new candidate has more priority than current one.
         if ((*scheduled_proc_it)->id != scheduled_proc->id and 
             next_deadline(time, (*scheduled_proc_it)->period) < next_deadline(time,scheduled_proc->period)) {
           ready_list.push_back(scheduled_proc);

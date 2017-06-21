@@ -11,6 +11,7 @@ class CLIOptions: public Options {
     CLIOptions(int argc, char** argv);
     ~CLIOptions() = default; 
 
+    // It returns the value corresponding to the given key
     virtual std::string get_str(std::string) override;
 
   private:

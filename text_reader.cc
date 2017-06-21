@@ -15,9 +15,10 @@ bool TextReader::is_next() {
   return !(ifs.peek() == EOF);
 }
 
+//! 
 std::vector<std::string> TextReader::next() {
   char line [SCHEDULER_SIMULATOR_INPUT_LINE_LENGTH];
-  ifs.getline(line, 256);
+  ifs.getline(line, SCHEDULER_SIMULATOR_INPUT_LINE_LENGTH);
   
   stringstream ss(line);
 

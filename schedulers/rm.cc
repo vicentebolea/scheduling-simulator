@@ -11,10 +11,13 @@ SchedulerRM::SchedulerRM (Options* opt) {
   end_time = atoi(opt->get_str("-e").c_str());
 }
 
+//! @return if violation or end_time reached
 bool SchedulerRM::is_next() {
   return !deadly_end && time <= end_time;
 }
 
+//! Read all the proccess from the input
+//! and insert them in the proc_list
 void SchedulerRM::initialize() {
     while (!input_lines.empty()) {
       auto line = input_lines.front();
@@ -29,6 +32,9 @@ void SchedulerRM::initialize() {
     std::copy(proc_list.begin(), proc_list.end(), back_inserter(ready_list));
 }
 
+
+//! Try to schedule the process with the highest priority.
+//! This is with the shortest period
 void SchedulerRM::schedule_proc() {
   if (ready_list.empty())
     return;
@@ -44,6 +50,14 @@ void SchedulerRM::schedule_proc() {
   cout << time << ": schedule P" << scheduled_proc->id << endl;
 }
 
+
+//! 1. At time 0, read the input and schedule the first process.
+//! 2. At time > 0
+//!    1. Check for deadline violations
+//!    2. Re-enter periodic proccess to the ready_list if it is their time.
+//!    3. If process terminate, schedule new process.
+//!    4. If any other process has more priority than the current one, 
+//!       schedule new process.
 bool SchedulerRM::schedule() {
 
   // At the first call
@@ -71,6 +85,7 @@ bool SchedulerRM::schedule() {
       });
 
 
+    // If a process is already scheduled
     if (scheduled_proc) {
       scheduled_proc->consumed_cpu++;
 
@@ -80,11 +95,13 @@ bool SchedulerRM::schedule() {
         scheduled_proc->consumed_cpu = 0;
         schedule_proc();
 
+      // Schedule new process if there are remaining processes
       } else if (!ready_list.empty()) {
         auto scheduled_proc_it = min_element(ready_list.begin(), ready_list.end(), [](auto& a, auto&b ) {
             return a->period < b->period;
             });
 
+        // If new candidate has more priority than current one.
         if ((*scheduled_proc_it)->id != scheduled_proc->id 
             and (*scheduled_proc_it)->period < scheduled_proc->period) {
           ready_list.push_back(scheduled_proc);
