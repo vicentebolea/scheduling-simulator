@@ -12,12 +12,15 @@ SchedulerLT::SchedulerLT (Options* opt) {
 }
 
 bool SchedulerLT::is_next() {
-  return !ready_list.empty() || (scheduled_proc and scheduled_proc->cpu_time >= 0) || !input_lines.empty();
+  return !ready_list.empty() or 
+    (scheduled_proc and scheduled_proc->cpu_time >= 0) or 
+    !input_lines.empty();
 }
 
 std::shared_ptr<SchedulerLT::Proc> SchedulerLT::schedule_proc() {
   std::shared_ptr<Proc> proc;
   decltype(ready_list.begin()) it;
+
   while (true) {
     it = max_element(ready_list.begin(), ready_list.end(), [] (auto& a, auto& b) {
         return (a->number_tickets < b->number_tickets);
@@ -77,6 +80,7 @@ bool SchedulerLT::schedule() {
   }
   bool change_process = !scheduled_proc;
 
+  // If there is already a proccess being executed
   if (scheduled_proc) {
     if (scheduled_proc->cpu_time == 0 or current_quantum == quantum) {
 
@@ -112,6 +116,7 @@ bool SchedulerLT::schedule() {
   }
 
 
+  // Find new proccess
   if (change_process and !ready_list.empty()) {
     auto next_proc = schedule_proc();
 

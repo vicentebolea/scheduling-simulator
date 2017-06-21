@@ -6,8 +6,11 @@
 namespace scheduler_simulator {
 
 class Scheduler {
+  //friend scheduler_factory;
   public:
     Scheduler () = default;
+
+    virtual ~Scheduler () = default; 
 
     // This method will schedule the next proccess.
     //
@@ -27,7 +30,6 @@ class Scheduler {
     }
 
   protected:
-    virtual ~Scheduler () = default; 
     uint32_t time = 0;
     
     std::list<std::vector<std::string>> input_lines;

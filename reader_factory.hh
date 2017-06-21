@@ -1,11 +1,11 @@
 #pragma once
-#include <options.hh>
+#include <memory>
 
 namespace scheduler_simulator {
 
-//class Options;
+class Options;
 class Reader;
 
-Reader* reader_factory(Options*);
+std::shared_ptr<Reader> reader_factory(Options*);
 
 }
