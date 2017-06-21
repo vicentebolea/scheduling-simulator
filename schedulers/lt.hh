@@ -15,10 +15,12 @@ class SchedulerLT : public InteractiveScheduler {
     virtual ~SchedulerLT () override = default;
 
     virtual bool schedule() override;
+
+    //! Whether there are remaining elements to schedule.
     virtual bool is_next() override;
 
   private:
-    // Proccess abstraction
+    //! Proccess abstraction
     struct Proc {
       int id = 0;
       int cpu_time = 0;
@@ -28,7 +30,7 @@ class SchedulerLT : public InteractiveScheduler {
       int resource = -1;
     };
 
-    // Get the proccess with the max amout of tickets
+    //! Get the proccess with the max amout of tickets
     std::shared_ptr<Proc> schedule_proc();
 
     // Proccesses lists
@@ -36,10 +38,10 @@ class SchedulerLT : public InteractiveScheduler {
     std::list<std::shared_ptr<Proc>> locked_list;
     std::shared_ptr<Proc> scheduled_proc;
 
-    // Resources map (Solves priority inversion)
+    //! Resources map (Solves priority inversion)
     std::map<int, std::shared_ptr<Proc>> resources_used;
     
-    // Boost list, it enables ticket compesation
+    //! Boost list, it enables ticket compesation
     std::map<int, int> boost_list;
 
     uint32_t quantum = 0, current_quantum = 0;

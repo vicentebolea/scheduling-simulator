@@ -11,10 +11,14 @@ SchedulerRR::SchedulerRR (Options* opt) {
   current_quantum = quantum;
 }
 
+//!
+//!
 bool SchedulerRR::is_next() {
   return !fifo_queue.empty() || scheduled_proc.second >= 0 || !input_lines.empty();
 }
 
+//!
+//!
 bool SchedulerRR::schedule() {
   if (time == 0) {
     input_lines.sort([] (auto& a, auto& b) { return stoi(a[1]) < stoi(b[1]); });

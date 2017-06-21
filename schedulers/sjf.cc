@@ -11,7 +11,7 @@ using std::endl;
 /// Anonymous namespace to avoid namespace collision
 namespace {
 
-// Finds the shortest process in the map
+//! Finds the shortest process in the map
 template <typename T>
 typename T::iterator min_element_all(T& container) {
     return (min_element(container.begin(), container.end(), 
@@ -22,19 +22,17 @@ typename T::iterator min_element_all(T& container) {
 
 }
 
-// Returns whether the scheduler is done.
-// @returns false if all its processes has terminated
-//
+//! @return false if all its processes has terminated
 bool SchedulerSJF::is_next() {
   return !remaining_times.empty() || !input_lines.empty();
 }
 
 
-//
-//
-//
-//
-//
+//! 1. It read all the arrival processes at the given time.
+//! 2. If there are proccesses in the ready list, find the shortest one.
+//! 3. If that process has finished remove it from ready list and schedule next sjf
+//! @note At time 0, it sorts the input.
+//! @see SJF_IWYOO_INPUT_FIX
 bool SchedulerSJF::schedule() {
   if (time == 0) {
     input_lines.sort([] (auto& a, auto& b) { return stoi(a[1]) < stoi(b[1]); });
@@ -53,6 +51,7 @@ bool SchedulerSJF::schedule() {
   if (!remaining_times.empty()) {
     auto shortest = min_element_all(remaining_times); 
 
+/// @ref 
 #ifdef SJF_IWYOO_INPUT_FIX
     // Needed for the case that the current proccess and a new comming proccess
     // has the same remaining time. The project requirements does not specify about it.

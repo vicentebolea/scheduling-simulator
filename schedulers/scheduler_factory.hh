@@ -7,7 +7,8 @@ namespace scheduler_simulator {
 class Scheduler;
 class Options;
 
-// Factory method inmplemented using a non-member non-static function. 
+//! Factory method inmplemented using a non-member non-static function. 
+//! @relates Scheduler
 std::shared_ptr<Scheduler> scheduler_factory(Options*);
 
 }

@@ -11,12 +11,21 @@ SchedulerLT::SchedulerLT (Options* opt) {
   current_quantum = quantum;
 }
 
+//! @return true if there are processes on the ready list, input_line list, or
+//!         there is currently an scheduled process.
 bool SchedulerLT::is_next() {
   return !ready_list.empty() or 
     (scheduled_proc and scheduled_proc->cpu_time >= 0) or 
     !input_lines.empty();
 }
 
+//! Helper private function to schedule the next proc.
+//!
+//! Should not be confused with schedule function. This 
+//! function will try to find an element from the ready list
+//! which is does not need a resource already locked. If it finds
+//! a proccess which needs a locked resourced it will transfer it tickets
+//! and try to schedule another process.
 std::shared_ptr<SchedulerLT::Proc> SchedulerLT::schedule_proc() {
   std::shared_ptr<Proc> proc;
   decltype(ready_list.begin()) it;
@@ -27,11 +36,15 @@ std::shared_ptr<SchedulerLT::Proc> SchedulerLT::schedule_proc() {
         });
 
     proc = *it;
+
+    // proc is holding a resource.
     if (proc->resource != -1) {
       auto r_it = resources_used.find(proc->resource);
 
-      // Trying to access locked resource
+      // proc is trying to access a locked resource.
       if (r_it != resources_used.end() and r_it->second->id != proc->id) {
+
+        //! Ticket transfer mechanism
         r_it->second->number_tickets += proc->number_tickets;
         r_it->second->borrowed_tickets = proc->number_tickets;
         r_it->second->borrowed_proc = proc;
@@ -51,6 +64,14 @@ std::shared_ptr<SchedulerLT::Proc> SchedulerLT::schedule_proc() {
   return proc;
 }
 
+//! Algorithm high-level description:
+//!   1. At time 0, it sorts the input.
+//!   2. If there are incoming processes, saved them in the ready_list.
+//!   3. If the quantum quota or cpu time is finished or there is not scheduled proc, 
+//!      find next process to be scheduled.
+//!      1. If proccess has finished delete it from ready list, and unlock resource.
+//!      2. If proccess has finished earlier, addup the speedup boost for ticket compensation.
+//!   4. Allocate new process if needed.
 bool SchedulerLT::schedule() {
   if (time == 0) {
     input_lines.sort([] (auto& a, auto& b) { return stoi(a[1]) < stoi(b[1]); });
@@ -87,7 +108,7 @@ bool SchedulerLT::schedule() {
       if (scheduled_proc->cpu_time == 0) {
         cout << time << ": terminate P" << scheduled_proc->id << endl;
 
-        // Free the resources
+        // Free locked resources
         if (scheduled_proc->resource != -1) {
           resources_used.erase(scheduled_proc->resource);
           if (scheduled_proc->borrowed_proc) {
@@ -99,7 +120,7 @@ bool SchedulerLT::schedule() {
           }
         }
 
-        // ticket compensation
+        // Ticket compensation
         if (current_quantum < quantum) {
           int speedup = quantum / current_quantum;
           boost_list.insert({scheduled_proc->id, speedup});

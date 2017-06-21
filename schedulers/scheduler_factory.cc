@@ -9,14 +9,15 @@
 
 using namespace scheduler_simulator;
   
+//! Metaprogramming trick
 #define SCHEDULER_TYPE(X, ...)    \
   if (type == #X) {             \
     return std::make_shared<Scheduler##X>(__VA_ARGS__); \
   }
   
-// It uses the metaprogramming SCHEDULE_TYPE macro to inject
-// the objects into the function.
-// @returns the specific scheduler given the options.
+//! It uses the metaprogramming SCHEDULE_TYPE macro to inject
+//! the objects into the function.
+//! @return the specific scheduler given the options.
 std::shared_ptr<Scheduler> scheduler_simulator::scheduler_factory(Options* ops) {
   std::string type = ops->get_str("-s");
   SCHEDULER_TYPE(SJF);

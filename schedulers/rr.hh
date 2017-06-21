@@ -17,7 +17,11 @@ class SchedulerRR : public InteractiveScheduler {
     virtual bool is_next() override;
 
   private:
+    //! Represents ready_queue.
     std::queue<std::pair<int, int>> fifo_queue;
+
+    //! Current scheduled process.
+    //! @note sentinel value {0,-1}
     std::pair<int, int> scheduled_proc = {0,-1};
     uint32_t quantum = 0;
     uint32_t current_quantum = 0;
