@@ -24,7 +24,7 @@ Current supported scheduler:
 The project uses Autotools. Thus, the building steps are the common three steps to build:
 ```
 #Download the tar ball from Github.
-wget https://github.com/vicentebolea/scheduling-simulator/archive/v0.0.2.tar.gz
+wget https://github.com/vicentebolea/scheduling-simulator/releases/download/v0.0.2/scheduling-simulator-0.0.2.tar.gz
 
 #untar
 tar xf scheduling-simulator-0.0.2.tar.gz
