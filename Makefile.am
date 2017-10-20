@@ -22,8 +22,8 @@ check_SCRIPTS = tests/integration-test-runner.py scheduler_sim
 TESTS = tests/integration-test-runner.py
 
 AM_TESTS_ENVIRONMENT = \
-											export TEST_BINARY=./scheduler_sim; \
-											export TEST_CONFIG=$(top_srcdir)/tests/test-config.yaml;
+                      export TEST_BINARY=./scheduler_sim; \
+                      export TEST_CONFIG=$(top_srcdir)/tests/test-config.yaml;
 
 
 tests/integration-test-runner.py:
