@@ -15,10 +15,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Generate Autotools files
       run: sh autogen.sh
-    - name: Make dirs
-      run: mkdir build; cd build
     - name: configure
-      run: ../configure
+      run: ./configure
     - name: make
       run: make
     - name: make check
