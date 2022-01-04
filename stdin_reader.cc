@@ -1,38 +1,24 @@
 #include "stdin_reader.hh"
+
+#include <iostream>
+#include <iterator>
 #include <sstream>
-#include <stdio.h>
-#include <string.h>
 #include <string>
 
 using namespace scheduler_simulator;
-using namespace std;
 
-StdinReader::StdinReader() {
-  fseek(stdin, 0L, SEEK_SET);
-}
+StdinReader::StdinReader() { }
 
-//! Interesting method to find if we 
-//! are about to reach EOF
+//! Interesting method to find if we are about to reach EOF
 bool StdinReader::is_next() {
-  char c = fgetc(stdin);
-  if (c == EOF)
-    return false;
-  else {
-    ungetc(c, stdin);
-    return true;
-  }
+  return EOF != std::cin.peek();
 }
 
 //! Read the next line from stdin
 std::vector<std::string> StdinReader::next() {
-  char line [SCHEDULER_SIMULATOR_INPUT_LINE_LENGTH];
-  fgets(line, SCHEDULER_SIMULATOR_INPUT_LINE_LENGTH, stdin);
-  stringstream ss(line);
+  std::stringstream s;
+  std::cin.get(*s.rdbuf()).ignore();
 
-  vector<string> output;
-  string token;
-  while (ss >> token)
-    output.push_back(token);
-
-  return output;
+  return {std::istream_iterator<std::string>(s),
+    std::istream_iterator<std::string>()};
 }
