@@ -14,7 +14,7 @@ Current supported scheduler:
 ### Dependencies
 #### For developers
 - Autotools suite.
-- Python2.7 with yaml module (For integration tests).
+- Python3 with yaml module (For integration tests).
 
 #### For users
 - UNIX plataform.
